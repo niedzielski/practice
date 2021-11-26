@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "practice",
+  "author": "Stephen Niedzielski",
+  "version": "0.0.0",
+  "license": "GPL-3.0-only",
+  "description": "💡 Coding exercises.",
+  "keywords": [
+    "study",
+    "algorithms",
+    "exercise"
+  ],
+  "homepage": "https://github.com/niedzielski/practice",
+  "repository": "github:niedzielski/practice",
+  "bugs": "https://github.com/niedzielski/practice/issues",
+  "type": "module",
+  "scripts": {
+    "test": "npm run formatter -- -l && npm run rebuild && npm run test:unit",
+    "test:unit": "jest -c .jest/jest.config.json",
+    "build": "tsc -b",
+    "rebuild": "npm run clean && npm run build",
+    "clean": "tsc -b --clean",
+    "format": "npm run formatter -- -w",
+    "formatter": "prettier './**/*.ts'"
+  },
+  "engines": {
+    "node": "16.11.0",
+    "npm": "8.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "27.0.3",
+    "jest": "27.3.1",
+    "pre-commit": "1.2.2",
+    "prettier": "2.5.0",
+    "ts-jest": "27.0.7",
+    "typescript": "4.5.2"
+  }
+}
