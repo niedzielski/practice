@@ -21,7 +21,7 @@
     "rebuild": "npm run clean && npm run build",
     "clean": "tsc -b --clean",
     "format": "npm run formatter -- -w",
-    "formatter": "prettier './**/*.ts'"
+    "formatter": "prettier './**/*.{cjs,json,md,ts}'"
   },
   "engines": {
     "node": "16.11.0",
