@@ -62,7 +62,7 @@ it('number ring', () => {
   })
 })
 
-it('Scary dungeon', () => {
+it('Spooky dungeon', () => {
   // 9    ╭──╮
   // 8    │┌─│─
   // 7    ││ x
@@ -79,7 +79,7 @@ it('Scary dungeon', () => {
   type Tile = {blocked?: true} & XY
   const w = 10
   const h = 10
-  const dungeon = new Array(w * h)
+  const dungeon = Array(w * h)
   for (let y = 0; y < h; ++y)
     for (let x = 0; x < w; ++x) dungeon[x + y * w] = {x, y}
   dungeon[6 + 8 * w].blocked = true
