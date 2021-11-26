@@ -18,9 +18,9 @@ export function bin_find(
  * @return Index if present.
  */
 export function bin_find_recursive<T>(
-  items: T[],
-  item: T,
-  compare: (left: T, right: T) => number,
+  items: readonly Readonly<T>[],
+  item: Readonly<T>,
+  compare: (lhs: Readonly<T>, rhs: Readonly<T>) => number,
   min: number = 0,
   max: number = items.length
 ): number | undefined {
