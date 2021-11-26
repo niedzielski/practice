@@ -51,8 +51,8 @@ export function remove<T>({nodes, compare}: Heap<T>): T {
 
   // Bubble down from the very top.
   for (let i = 0; i < nodes.length; ) {
-    const leftIndex = 2 * i + 1 //(i + 1) * 2 - 1 // = 2 * i + 2 -1 = 2i + 1
-    const rightIndex = leftIndex + 1 //(i + 1) * 2
+    const leftIndex = 2 * i + 1 // (i + 1) * 2 - 1 // = 2 * i + 2 -1 = 2i + 1
+    const rightIndex = leftIndex + 1 // (i + 1) * 2
 
     if (
       leftIndex < nodes.length &&
