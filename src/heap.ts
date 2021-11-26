@@ -33,7 +33,7 @@ export type Heap<T> = {nodes: T[]; compare: Compare<T>}
  * @return Negative when lhs < rhs, zero when lhs == rhs, and positive when
  *         lhs > rhs.
  */
-export type Compare<T> = (lhs: T, rhs: T) => number
+export type Compare<T> = (lhs: Readonly<T>, rhs: Readonly<T>) => number
 
 export function make<T>(compare: Compare<T>): Heap<T> {
   return {nodes: [], compare}
@@ -74,15 +74,15 @@ export function remove<T>({nodes, compare}: Heap<T>): T {
   return min
 }
 
-export function insert<T>(heap: Heap<T>, ...nodes: T[]): void {
+export function insert<T>(heap: Heap<T>, ...nodes: readonly T[]): void {
   nodes.forEach(node => insertOne(heap, node))
 }
 
-export function getSize<T>(heap: Heap<T>): number {
+export function getSize<T>(heap: Readonly<Heap<T>>): number {
   return heap.nodes.length
 }
 
-export function isEmpty<T>(heap: Heap<T>): boolean {
+export function isEmpty<T>(heap: Readonly<Heap<T>>): boolean {
   return heap.nodes.length == 0
 }
 
@@ -107,6 +107,6 @@ function parentIndex(index: number): number {
   return Math.trunc((index - 1) / 2)
 }
 
-function swap<T>(nodes: T[], left: number, right: number): void {
-  ;[nodes[left], nodes[right]] = [nodes[right]!, nodes[left]!]
+function swap<T>(nodes: T[], lhs: number, rhs: number): void {
+  ;[nodes[lhs], nodes[rhs]] = [nodes[rhs]!, nodes[lhs]!]
 }
