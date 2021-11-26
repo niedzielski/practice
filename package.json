@@ -6,9 +6,17 @@
   "license": "GPL-3.0-only",
   "description": "💡 Coding exercises.",
   "keywords": [
+    "practice",
     "study",
+    "exercises",
+    "data structures",
     "algorithms",
-    "exercise"
+    "graphs",
+    "matrices",
+    "arrays",
+    "trees",
+    "heaps",
+    "linked-lists"
   ],
   "homepage": "https://github.com/niedzielski/practice",
   "repository": "github:niedzielski/practice",
