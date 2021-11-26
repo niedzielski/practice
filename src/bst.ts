@@ -19,7 +19,7 @@ export function insertBalanced<T extends Node<T>>(
 
   const balance = getHeight(tree.left) - getHeight(tree.right)
 
-  if (tree.right && balance < -1) {
+  if (tree.right != null && balance < -1) {
     // tree.right is taller than tree.left. Rotate left.
     const balance = getHeight(tree.right.left) - getHeight(tree.right.right)
 
@@ -27,7 +27,7 @@ export function insertBalanced<T extends Node<T>>(
     return rotateLeft(tree)
   }
 
-  if (tree.left && balance > 1) {
+  if (tree.left != null && balance > 1) {
     // tree.left is taller than tree.right. Rotate right.
     const balance = getHeight(tree.left.left) - getHeight(tree.left.right)
 
