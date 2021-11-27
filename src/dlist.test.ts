@@ -2,13 +2,14 @@ import * as Queue from './dlist'
 
 type Link = {data: string; prev?: Link; next?: Link}
 
-it('push, pop, push, push, pop, pop', () => {
+it('push, pop, push, push, pop, pop, pop', () => {
   const queue = Queue.make<Link>()
   Queue.push(queue, {data: 'a'})
   expect(Queue.pop(queue)).toEqual({data: 'a'})
   Queue.push(queue, {data: 'b'}, {data: 'c'})
   expect(Queue.pop(queue)).toEqual({data: 'b'})
   expect(Queue.pop(queue)).toEqual({data: 'c'})
+  expect(() => Queue.pop(queue)).toThrow()
 })
 
 it('push, push, push, pop, pop, pop', () => {
