@@ -1,4 +1,5 @@
 import * as BST from './bst'
+import {deepCloneJSON} from './clone'
 
 describe('insert', () => {
   type Node = {val: number; left?: Node; right?: Node}
@@ -29,11 +30,11 @@ describe('insert', () => {
   ])('Case %# %s: %p', (_, tree, node, expected) => {
     const compare = (lhs: Readonly<Node>, rhs: Readonly<Node>) =>
       lhs.val - rhs.val
-    expect(BST.insert(cloneDeep(tree), cloneDeep(node), compare)).toEqual(
-      expected
-    )
     expect(
-      BST.insertIterative(cloneDeep(tree), cloneDeep(node), compare)
+      BST.insert(deepCloneJSON(tree), deepCloneJSON(node), compare)
+    ).toEqual(expected)
+    expect(
+      BST.insertIterative(deepCloneJSON(tree), deepCloneJSON(node), compare)
     ).toEqual(expected)
   })
 })
@@ -368,10 +369,3 @@ describe('insertBalanced', () => {
     expect(BST.insertBalanced(tree, node, compare)).toEqual(expected)
   })
 })
-
-// Use toEqual() instead of toStrictEqual() to strip omitted and undefined
-// fields.
-function cloneDeep<T>(val: T): T {
-  if (val == null) return val
-  return JSON.parse(JSON.stringify(val))
-}
