@@ -60,7 +60,7 @@ export function reverse(list: Node | undefined): Node | undefined {
 }
 
 export function reverseRecursive(list: Node | undefined): Node | undefined {
-  if (!list || !list.next) return list
+  if (list?.next == null) return list
   const next = list.next
   list.next = undefined
   const head = reverseRecursive(next)
@@ -69,9 +69,9 @@ export function reverseRecursive(list: Node | undefined): Node | undefined {
 }
 
 export function isCyclic(list: Node | undefined): boolean {
-  for (let runner = list?.next; list && runner; runner = runner.next?.next) {
-    if (list === runner) return true
-    list = list.next
+  for (let runner = list?.next; runner != null; runner = runner.next?.next) {
+    if (list == runner) return true
+    list = list!.next
   }
   return false
 }

@@ -22,7 +22,7 @@ export function pop<T extends Link<T>>(list: List<T>): T {
 
   link.prev = undefined
 
-  if (list.tail === link) list.tail = list.head
+  if (list.tail == link) list.tail = list.head
 
   return link
 }

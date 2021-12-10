@@ -13,7 +13,7 @@ function nearest(trie: Node, word: string): Node {
   let prefix = ''
   for (const letter of word) {
     prefix += letter
-    const child = node.children.find(node => node.prefix === prefix)
+    const child = node.children.find(node => node.prefix == prefix)
     if (child != null) node = child
     else break
   }

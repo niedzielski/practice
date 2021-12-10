@@ -112,7 +112,7 @@ it('Spooky dungeon', () => {
     const nodes = []
     for (let y = to.y - 1; y <= to.y + 1; ++y)
       for (let x = to.x - 1; x <= to.x + 1; ++x) {
-        if (x >= 0 && y >= 0 && x < w && y < h && !(x === to.x && y === to.y))
+        if (x >= 0 && y >= 0 && x < w && y < h && !(x == to.x && y == to.y))
           nodes.push(graph.nodes[x + y * w]!)
       }
     return nodes

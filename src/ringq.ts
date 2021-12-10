@@ -35,7 +35,7 @@ export function clear<T>(queue: Queue<T>): void {
 
 export function getSize<T>(queue: Queue<T>): number {
   // Three cases:
-  // - write === read: queue is empty
+  // - write == read: queue is empty
   // - write > read: write - read
   // - write < read: read - write
   // Consider queue of 100 capacity:
@@ -64,17 +64,17 @@ export function isFull<T>(queue: Queue<T>): boolean {
   //   ---avail--r-------full---w-avail--
 
   // Consider full queue of 100 capacity where:
-  // - Write is 100, read is 0: (100 + 1) % 101 === 0
-  // - Write is 50, read is 51: (50 + 1) % 101 === 51
-  // Consider empty cases where write === read:
-  // - Write is 100, read is 100: (100 + 1) % 101 === 100
-  // - Write is 50, read is 50: (50 + 1) % 101 === 50
+  // - Write is 100, read is 0: (100 + 1) % 101 == 0
+  // - Write is 50, read is 51: (50 + 1) % 101 == 51
+  // Consider empty cases where write == read:
+  // - Write is 100, read is 100: (100 + 1) % 101 == 100
+  // - Write is 50, read is 50: (50 + 1) % 101 == 50
   // Consider nonempty, non-full cases:
-  // - Write is 10, read is 0: (10 + 1) % 101 === 0
-  // - Write is 0, read is 10: (0 + 1) % 101 === 10
-  return (queue.write + 1) % queue.buffer.length === queue.read
+  // - Write is 10, read is 0: (10 + 1) % 101 == 0
+  // - Write is 0, read is 10: (0 + 1) % 101 == 10
+  return (queue.write + 1) % queue.buffer.length == queue.read
 }
 
 export function isEmpty<T>(queue: Queue<T>): boolean {
-  return queue.write === queue.read
+  return queue.write == queue.read
 }
