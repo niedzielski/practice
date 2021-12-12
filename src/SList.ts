@@ -1,11 +1,10 @@
 export type Node = {next?: Node}
 
-/** @return Return true to halt. */
+/** @return True to halt. */
 export type It = (node: Node) => boolean | void
 
 export function find(list: Node | undefined, it: It): Node | undefined {
   for (; list; list = list.next) if (it(list)) return list
-  return
 }
 
 /** @return New head. */
