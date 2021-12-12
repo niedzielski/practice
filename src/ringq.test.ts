@@ -3,27 +3,27 @@ import * as Queue from './ringq'
 test('pushAll', () => {
   const queue = Queue.make(3)
   Queue.push(queue, 1, 2, 3)
-  expect(Queue.pop(queue)).toStrictEqual(1)
-  expect(Queue.pop(queue)).toStrictEqual(2)
-  expect(Queue.pop(queue)).toStrictEqual(3)
+  expect(Queue.pop(queue)).toBe(1)
+  expect(Queue.pop(queue)).toBe(2)
+  expect(Queue.pop(queue)).toBe(3)
 })
 
 test('push / pop', () => {
   const queue = Queue.make(2)
   Queue.push(queue, 1)
   Queue.push(queue, 2)
-  expect(Queue.pop(queue)).toStrictEqual(1)
-  expect(Queue.pop(queue)).toStrictEqual(2)
+  expect(Queue.pop(queue)).toBe(1)
+  expect(Queue.pop(queue)).toBe(2)
   Queue.push(queue, 3)
   Queue.push(queue, 4)
-  expect(Queue.pop(queue)).toStrictEqual(3)
-  expect(Queue.pop(queue)).toStrictEqual(4)
+  expect(Queue.pop(queue)).toBe(3)
+  expect(Queue.pop(queue)).toBe(4)
   Queue.push(queue, 5)
-  expect(Queue.pop(queue)).toStrictEqual(5)
+  expect(Queue.pop(queue)).toBe(5)
   Queue.push(queue, 6)
   Queue.push(queue, 7)
-  expect(Queue.pop(queue)).toStrictEqual(6)
-  expect(Queue.pop(queue)).toStrictEqual(7)
+  expect(Queue.pop(queue)).toBe(6)
+  expect(Queue.pop(queue)).toBe(7)
 })
 
 test('push: overflow', () => {
@@ -46,7 +46,7 @@ describe('clear', () =>
     const queue = Queue.make<number>(3)
     Queue.push(queue, ...items)
     Queue.clear(queue)
-    expect(Queue.getSize(queue)).toStrictEqual(0)
+    expect(Queue.getSize(queue)).toBe(0)
   }))
 
 describe('getSize', () =>
@@ -57,7 +57,7 @@ describe('getSize', () =>
   ])('Case %# %s: %p', (_, items, size) => {
     const queue = Queue.make<number>(3)
     Queue.push(queue, ...items)
-    expect(Queue.getSize(queue)).toStrictEqual(size)
+    expect(Queue.getSize(queue)).toBe(size)
   }))
 
 describe('getCapacity', () =>
@@ -67,7 +67,7 @@ describe('getCapacity', () =>
     ['multi', 2]
   ])('Case %# %s: %p', (_, capacity) => {
     const queue = Queue.make<number>(capacity)
-    expect(Queue.getCapacity(queue)).toStrictEqual(capacity)
+    expect(Queue.getCapacity(queue)).toBe(capacity)
   }))
 
 describe('isFull', () =>
@@ -78,7 +78,7 @@ describe('isFull', () =>
   ])('Case %# %s: %p', (_, items, expected) => {
     const queue = Queue.make<number>(3)
     Queue.push(queue, ...items)
-    expect(Queue.isFull(queue)).toStrictEqual(expected)
+    expect(Queue.isFull(queue)).toBe(expected)
   }))
 
 describe('isEmpty', () =>
@@ -89,5 +89,5 @@ describe('isEmpty', () =>
   ])('Case %# %s: %p', (_, items, expected) => {
     const queue = Queue.make<number>(3)
     Queue.push(queue, ...items)
-    expect(Queue.isEmpty(queue)).toStrictEqual(expected)
+    expect(Queue.isEmpty(queue)).toBe(expected)
   }))

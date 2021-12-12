@@ -29,5 +29,5 @@ describe('isEmpty', () =>
   ])('Case %# %s: %p', (_, items, empty) => {
     const queue = Queue.make<Link>()
     Queue.push(queue, ...items)
-    expect(Queue.isEmpty(queue)).toStrictEqual(empty)
+    expect(Queue.isEmpty(queue)).toBe(empty)
   }))
