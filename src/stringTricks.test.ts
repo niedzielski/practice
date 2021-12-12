@@ -23,3 +23,13 @@ test.each([
   expect(isPalindrome(str)).toBe(expected)
   expect(isPalindromeRecursive(str)).toBe(expected)
 })
+
+test('Iterate over string', () => {
+  const stack = []
+  for (const char of 'abc') stack.push(char)
+  expect(stack).toStrictEqual(['a', 'b', 'c'])
+})
+
+test('Repeating a string', () => {
+  expect('a'.repeat(3)).toStrictEqual('aaa')
+})
