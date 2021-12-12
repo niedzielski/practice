@@ -7,4 +7,6 @@ test('Create and use', () => {
   expect(ex.memberC).toBe(3)
   ex.memberC = 4
   expect(ex.memberC).toBe(4)
+  expect(ex.esMember).toBe(5)
+  expect(Ex.staticMember).toBe(6)
 })
