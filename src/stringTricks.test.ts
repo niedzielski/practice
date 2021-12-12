@@ -1,4 +1,11 @@
-import {isPalindrome, isPalindromeRecursive} from './isPalindrome'
+import {isAnagram, isPalindrome, isPalindromeRecursive} from './stringTricks'
+
+// https://leetcode.com/problems/valid-anagram
+test.each([
+  ['ex 1', 'anagram', 'nagaram', true],
+  ['ex 2', 'rat', 'car', false],
+  ['different lengths', 'a', 'ab', false]
+])('%s', (_, lhs, rhs, expected) => expect(isAnagram(lhs, rhs)).toBe(expected))
 
 test.each([
   ['empty', '', true],
