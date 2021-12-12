@@ -1,4 +1,4 @@
-export type Node = {next?: Node}
+export type Node = {next?: Node | undefined}
 
 /** @return True to halt. */
 export type It = (node: Node) => boolean | void
@@ -73,4 +73,33 @@ export function isCyclic(list: Node | undefined): boolean {
     list = list!.next
   }
   return false
+}
+
+/**
+ * When list is L0 → L1 → … → Ln - 1 → Ln, reorder to
+ * L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …. See
+ * https://leetcode.com/problems/reorder-list.
+ */
+export function reorder(list: Node | undefined): void {
+  let node = list
+  for (let runner = list; runner != null; runner = runner.next?.next)
+    node = node!.next
+
+  let tail = undefined
+  while (node != null) {
+    const {next} = node
+    node.next = tail
+    tail = node
+    node = next
+  }
+
+  node = list
+  while (tail != null) {
+    const {next} = node!
+    node!.next = tail
+    tail = tail.next
+    node!.next.next = next
+    node = next
+  }
+  if (node != null) node.next = undefined
 }

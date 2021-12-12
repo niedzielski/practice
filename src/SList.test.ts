@@ -170,3 +170,27 @@ describe('isCycle', () =>
   ])('Case %# %s: %p', (_, list, expected) =>
     expect(SList.isCyclic(list)).toStrictEqual(expected)
   ))
+
+describe('reorder', () =>
+  test.each(<
+    [
+      msg: string,
+      list: SList.Node | undefined,
+      expected: SList.Node | undefined
+    ][]
+  >[
+    ['empty', undefined, undefined],
+    [
+      'ex 1',
+      {val: 1, next: {val: 2, next: {val: 3, next: {val: 4}}}},
+      {val: 1, next: {val: 4, next: {val: 2, next: {val: 3}}}}
+    ],
+    [
+      'ex 2',
+      {val: 1, next: {val: 2, next: {val: 3, next: {val: 4, next: {val: 5}}}}},
+      {val: 1, next: {val: 5, next: {val: 2, next: {val: 4, next: {val: 3}}}}}
+    ]
+  ])('Case %# %s: %p', (_, list, expected) => {
+    SList.reorder(list)
+    expect(list).toEqual(expected)
+  }))
