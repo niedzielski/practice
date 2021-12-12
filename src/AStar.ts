@@ -1,4 +1,4 @@
-import * as Heap from './heap'
+import * as Heap from './Heap'
 
 /** Nodes must be references or primitives. */
 export type Graph<T> = {

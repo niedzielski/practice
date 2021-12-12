@@ -1,4 +1,4 @@
-import * as AStar from './a-star'
+import * as AStar from './AStar'
 
 it('alphabet', () => {
   const alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']

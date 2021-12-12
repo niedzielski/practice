@@ -1,4 +1,4 @@
-import * as Queue from './dlist'
+import * as Queue from './DList'
 
 type Link = {data: string; prev?: Link; next?: Link}
 

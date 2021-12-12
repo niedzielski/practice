@@ -1,4 +1,4 @@
-export function bin_find(
+export function binFind(
   nums: readonly number[],
   num: number
 ): number | undefined {
@@ -17,7 +17,7 @@ export function bin_find(
  * @arg max Exclusive maximum.
  * @return Index if present.
  */
-export function bin_find_recursive<T>(
+export function binFindRecursive<T>(
   items: readonly Readonly<T>[],
   item: Readonly<T>,
   compare: (lhs: Readonly<T>, rhs: Readonly<T>) => number,
@@ -32,9 +32,9 @@ export function bin_find_recursive<T>(
 
   // If item is less than middle, item can only be in the left. Search the left.
   // middle has been checked and so is correct for exclusive max.
-  if (comparison < 0) return bin_find_recursive(items, item, compare, min, mid)
+  if (comparison < 0) return binFindRecursive(items, item, compare, min, mid)
 
   // If item is greater than middle, item can only be in the right. Search the
   // right. min is inclusive so add one to skip middle which has been checked.
-  return bin_find_recursive(items, item, compare, mid + 1, max)
+  return binFindRecursive(items, item, compare, mid + 1, max)
 }

@@ -1,4 +1,4 @@
-import * as Trie from './trie'
+import * as Trie from './Trie'
 
 it('Empty completion', () => {
   const trie = Trie.make()

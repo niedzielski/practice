@@ -1,4 +1,4 @@
-import {bin_find, bin_find_recursive} from './bin-find'
+import {binFind, binFindRecursive} from './binFind'
 
 it.each([
   ['empty', [], 1, undefined],
@@ -14,8 +14,8 @@ it.each([
   ['five found 2', [1, 2, 3, 4, 5], 5, 4],
   ['five not found', [1, 2, 3, 4, 5], 6, undefined]
 ])('%s', (_, nums, num, expected) => {
-  expect(bin_find(nums, num)).toBe(expected)
-  expect(bin_find_recursive<number>(nums, num, (lhs, rhs) => lhs - rhs)).toBe(
+  expect(binFind(nums, num)).toBe(expected)
+  expect(binFindRecursive<number>(nums, num, (lhs, rhs) => lhs - rhs)).toBe(
     expected
   )
 })

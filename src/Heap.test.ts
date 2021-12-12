@@ -1,4 +1,4 @@
-import * as Heap from './heap'
+import * as Heap from './Heap'
 
 it('insert: ascending sorted insertion', () => {
   const heap = Heap.make<number>((lhs, rhs) => lhs - rhs)

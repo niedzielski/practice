@@ -1,4 +1,4 @@
-import * as Queue from './ringq'
+import * as Queue from './RingQueue'
 
 test('pushAll', () => {
   const queue = Queue.make(3)

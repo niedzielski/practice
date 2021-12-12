@@ -1,4 +1,4 @@
-import * as BST from './bst'
+import * as BST from './BST'
 import {deepCloneJSON} from './clone'
 
 describe('insert', () => {

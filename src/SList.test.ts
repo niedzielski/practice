@@ -1,5 +1,5 @@
 import {deepCloneJSON} from './clone'
-import * as SList from './slist'
+import * as SList from './SList'
 
 describe('find', () =>
   test.each(<
