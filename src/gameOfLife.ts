@@ -1,6 +1,6 @@
 export enum Cell {
   Dead = 0,
-  Alive = 1
+  Living = 1
 }
 export type Board = Cell[][]
 
@@ -11,7 +11,7 @@ export function gameOfLife(board: Board): void {
     top = mid
     mid = [...board[y]!]
     for (let x = 0; x < board[y]!.length; x++) {
-      const living = sumMaybeNums(
+      const living = sumMaybeLiving(
         top[x - 1],
         top[x],
         top[x + 1],
@@ -21,14 +21,18 @@ export function gameOfLife(board: Board): void {
         board[y + 1]?.[x],
         board[y + 1]?.[x + 1]
       )
-      if (mid[x] == 1 && living < 2) board[y]![x] = 0
-      else if (mid[x] == 1 && living >= 2 && living <= 3) board[y]![x] = 1
-      else if (mid[x] == 1 && living > 3) board[y]![x] = 0
-      else if (mid[x] == 0 && living == 3) board[y]![x] = 1
+      if (mid[x] == Cell.Living && living < 2) board[y]![x] = Cell.Dead
+      else if (mid[x] == Cell.Living && living >= 2 && living <= 3)
+        board[y]![x] = Cell.Living
+      else if (mid[x] == Cell.Living && living > 3) board[y]![x] = Cell.Dead
+      else if (mid[x] == Cell.Dead && living == 3) board[y]![x] = Cell.Living
     }
   }
 }
 
-function sumMaybeNums(...nums: readonly (number | undefined)[]): number {
-  return nums.reduce((sum: number, num) => sum + (num ?? 0), 0)
+function sumMaybeLiving(...cells: readonly (Cell | undefined)[]): number {
+  return cells.reduce(
+    (sum: number, cell) => sum + (cell == Cell.Living ? 1 : 0),
+    0
+  )
 }
