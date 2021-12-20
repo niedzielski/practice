@@ -52,3 +52,16 @@ test('Find and test', () => {
   expect([1, 2, 3].some(val => val == 2)).toStrictEqual(true)
   expect([1, 2, 3].every(val => val != 0)).toStrictEqual(true)
 })
+
+test('To and from object', () => {
+  expect(
+    Object.fromEntries([
+      ['a', 1],
+      ['b', 2]
+    ])
+  ).toStrictEqual({a: 1, b: 2})
+  expect(Object.entries({a: 1, b: 2})).toStrictEqual([
+    ['a', 1],
+    ['b', 2]
+  ])
+})
