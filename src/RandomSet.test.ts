@@ -34,4 +34,14 @@ test('Iterator', () => {
   vals.length = 0
   for (const val of set) vals.push(val)
   expect(vals).toStrictEqual([1, 2, 4, 5, 6])
+
+  expect(set.map(val => -val)).toStrictEqual([-1, -2, -4, -5, -6])
+})
+
+test('Map', () => {
+  const set = new RandomSet()
+  expect(set.insert(1)).toBe(true)
+  expect(set.insert(2)).toBe(true)
+  expect(set.insert(3)).toBe(true)
+  expect(set.map(val => -val)).toStrictEqual([-1, -2, -3])
 })

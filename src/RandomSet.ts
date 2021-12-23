@@ -34,6 +34,14 @@ export class RandomSet {
   }
 
   *[Symbol.iterator](): Generator<number> {
-    for (const key in this._keyToIndex) yield Number.parseFloat(key) // This parse wouldn't be needed if Map was used.
+    // This parse wouldn't be needed if Map was used.
+    for (const key in this._keyToIndex) yield Number.parseFloat(key)
+  }
+
+  map<T>(
+    callback: (value: number, index: number, array: number[]) => T,
+    self?: unknown
+  ): T[] {
+    return this._keys.map(callback, self)
   }
 }
