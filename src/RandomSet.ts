@@ -32,4 +32,8 @@ export class RandomSet {
     const index = Math.trunc(Math.random() * this._keys.length)
     return this._keys[index]
   }
+
+  *[Symbol.iterator](): Generator<number> {
+    for (const key in this._keyToIndex) yield Number.parseFloat(key) // This parse wouldn't be needed if Map was used.
+  }
 }
