@@ -3,11 +3,19 @@ export class RandomSet {
   private _keyToIndex: Record<number, number> = Object.create(null)
   private _keys: number[] = []
 
+  get size(): number {
+    return this._keys.length
+  }
+
+  *[Symbol.iterator](): Generator<number> {
+    for (const key of this._keys) yield key
+  }
+
   insert(val: number): boolean {
     if (this._keyToIndex[val] != null) return false
 
-    this._keyToIndex[val] = this._keys.length
-    this._keys[this._keys.length] = val
+    this._keyToIndex[val] = this.size
+    this._keys[this.size] = val
 
     return true
   }
@@ -29,13 +37,8 @@ export class RandomSet {
   }
 
   getRandom(): number | undefined {
-    const index = Math.trunc(Math.random() * this._keys.length)
+    const index = Math.trunc(Math.random() * this.size)
     return this._keys[index]
-  }
-
-  *[Symbol.iterator](): Generator<number> {
-    // This parse wouldn't be needed if Map was used.
-    for (const key in this._keyToIndex) yield Number.parseFloat(key)
   }
 
   map<T>(
