@@ -7,7 +7,7 @@ export function find<T>(
   list: Link<T> | undefined,
   it: It<T>
 ): Link<T> | undefined {
-  for (; list; list = list.next) if (it(list)) return list
+  for (; list != null; list = list.next) if (it(list)) return list
 }
 
 /** @return New head. */
@@ -19,26 +19,22 @@ export function removeFront<T>(list: Link<T> | undefined): Link<T> | undefined {
 }
 
 /** @return New head (link). */
-export function prepend<T>(list: Link<T> | undefined, link: Link<T>): Link<T> {
-  link.next = list
-  return link
+export function prepend<T>(list: Link<T> | undefined, val: T): Link<T> {
+  return {val, next: list}
 }
 
 /** @return New head. */
-export function append<T>(list: Link<T> | undefined, link: Link<T>): Link<T> {
-  if (list == null) return link
+export function append<T>(list: Link<T> | undefined, val: T): Link<T> {
+  if (list == null) return {val}
   let tail = list
   while (tail.next != null) tail = tail.next
-  tail.next = link
+  tail.next = {val}
   return list
 }
 
-export function appendRecursive<T>(
-  list: Link<T> | undefined,
-  link: Link<T>
-): Link<T> {
-  if (list == null) return link
-  list.next = appendRecursive(list.next, link)
+export function appendRecursive<T>(list: Link<T> | undefined, val: T): Link<T> {
+  if (list == null) return {val}
+  list.next = appendRecursive(list.next, val)
   return list
 }
 

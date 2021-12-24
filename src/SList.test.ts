@@ -53,40 +53,30 @@ describe('removeFront', () =>
 
 describe('prepend', () =>
   test.each([
-    [
-      'empty',
-      undefined,
-      {val: 'a', next: undefined},
-      {val: 'a', next: undefined}
-    ],
+    ['empty', undefined, 'a', {val: 'a', next: undefined}],
     [
       'nonempty',
       {val: 'a', next: undefined},
-      {val: 'b', next: undefined},
+      'b',
       {val: 'b', next: {val: 'a', next: undefined}}
     ]
-  ])('Case %# %s: %p', (_, list, node, expected) =>
-    expect(SList.prepend(list, node)).toStrictEqual(expected)
+  ])('Case %# %s: %p', (_, list, val, expected) =>
+    expect(SList.prepend(list, val)).toStrictEqual(expected)
   ))
 
 describe('append', () =>
   test.each([
-    [
-      'empty',
-      undefined,
-      {val: 'a', next: undefined},
-      {val: 'a', next: undefined}
-    ],
+    ['empty', undefined, 'a', {val: 'a', next: undefined}],
     [
       'singular',
       {val: 'a', next: undefined},
-      {val: 'b', next: undefined},
+      'b',
       {val: 'a', next: {val: 'b', next: undefined}}
     ],
     [
       'multi',
       {val: 'a', next: {val: 'b', next: undefined}},
-      {val: 'c', next: undefined},
+      'c',
       {val: 'a', next: {val: 'b', next: {val: 'c', next: undefined}}}
     ]
   ])('Case %# %s: %p', (_, list, node, expected) => {
