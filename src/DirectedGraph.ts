@@ -3,7 +3,7 @@ import * as SList from './SList'
 export class DirectedGraph<T> {
   #edges: Map<T, Set<T>> = new Map()
 
-  addEdge(from: T, ...to: T[]): void {
+  addEdge(from: T, ...to: readonly T[]): void {
     this.#edges.set(from, new Set(to))
   }
 
