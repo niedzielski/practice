@@ -2,7 +2,7 @@ import {RandomSet} from './RandomSet'
 
 // https://leetcode.com/problems/insert-delete-getrandom-o1/
 test('Ex 1', () => {
-  const set = new RandomSet()
+  const set = new RandomSet<number>()
   expect(set.insert(1)).toBe(true)
   expect(set.size).toBe(1)
   expect(set.remove(2)).toBe(false)
@@ -18,7 +18,7 @@ test('Ex 1', () => {
 })
 
 test('Iterator', () => {
-  const set = new RandomSet()
+  const set = new RandomSet<number>()
   expect(set.insert(1)).toBe(true)
   expect(set.insert(2)).toBe(true)
   expect(set.insert(3)).toBe(true)
@@ -47,7 +47,7 @@ test('Iterator', () => {
 })
 
 test('Map', () => {
-  const set = new RandomSet()
+  const set = new RandomSet<number>()
   expect(set.insert(1)).toBe(true)
   expect(set.insert(2)).toBe(true)
   expect(set.insert(3)).toBe(true)

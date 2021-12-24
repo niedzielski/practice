@@ -1,50 +1,50 @@
-export class RandomSet {
-  // This could be Map if you want to store objects and look-up by reference.
-  private _keyToIndex: Record<number, number> = Object.create(null)
-  private _keys: number[] = []
+export class RandomSet<Value> {
+  private indices: Map<Value, number> = new Map()
+  private values: Value[] = []
 
   get size(): number {
-    return this._keys.length
+    return this.values.length
   }
 
-  *[Symbol.iterator](): Generator<number> {
-    for (const key of this._keys) yield key
+  *[Symbol.iterator](): Generator<Value> {
+    for (const val of this.values) yield val
   }
 
-  insert(val: number): boolean {
-    if (this._keyToIndex[val] != null) return false
+  insert(val: Value): boolean {
+    if (this.indices.has(val)) return false
 
-    this._keyToIndex[val] = this.size
-    this._keys[this.size] = val
+    this.indices.set(val, this.size)
+    this.values[this.size] = val
 
     return true
   }
 
-  remove(val: number): boolean {
-    const index = this._keyToIndex[val]
+  remove(val: Value): boolean {
+    const index = this.indices.get(val)
     if (index == null) return false
 
-    delete this._keyToIndex[val]
+    this.indices.delete(val)
 
-    const lastKey = this._keys.pop()!
+    const lastKey = this.values.pop()!
     if (lastKey != val) {
       // Reinsert.
-      this._keyToIndex[lastKey] = index
-      this._keys[index] = lastKey
+      this.indices.delete(lastKey)
+      this.indices.set(lastKey, index)
+      this.values[index] = lastKey
     }
 
     return true
   }
 
-  getRandom(): number | undefined {
+  getRandom(): Value | undefined {
     const index = Math.trunc(Math.random() * this.size)
-    return this._keys[index]
+    return this.values[index]
   }
 
-  map<T>(
-    callback: (value: number, index: number, array: number[]) => T,
+  map<To>(
+    callback: (value: Value, index: number, array: Value[]) => To,
     self?: unknown
-  ): T[] {
-    return this._keys.map(callback, self)
+  ): To[] {
+    return this.values.map(callback, self)
   }
 }
