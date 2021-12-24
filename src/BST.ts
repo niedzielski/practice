@@ -6,6 +6,56 @@ export type Compare<T extends Node<T>> = (
   rhs: Readonly<T>
 ) => number
 
+export function lowestCommonAncestor<T extends Node<T>>(
+  root: T | undefined,
+  p: T | undefined,
+  q: T | undefined
+): T | undefined {
+  const parent = new Map<T | undefined, T | undefined>([[root, undefined]])
+  const open = [root]
+  while (open.length > 0) {
+    const node = open.pop()
+    if (node == null) continue
+    parent.set(node.left, node)
+    parent.set(node.right, node)
+    if (parent.has(p) && parent.has(q)) break
+    open.push(node.left, node.right)
+  }
+
+  const parentsOfP = new Set<T | undefined>()
+  for (let node = p; node != null; node = parent.get(node)) parentsOfP.add(node)
+
+  for (let node = q; node != null; node = parent.get(node))
+    if (parentsOfP.has(node)) return node
+  return root
+}
+
+// Find the node that has p and q as children recursively.
+export function lowestCommonAncestorRecursive<T extends Node<T>>(
+  root: T | undefined,
+  p: T | undefined,
+  q: T | undefined
+): T | undefined {
+  // If root is null, nothing to be done. Return null. If root is one of the
+  // targets, we also can't do anything. We have to return the target. If one
+  // target is the child of the other target, this is still correct.
+  if (root == null || root == p || root == q) return root
+
+  // Search the children. O(n) worst case.
+  const left = lowestCommonAncestorRecursive(root.left, p, q)
+  const right = lowestCommonAncestorRecursive(root.right, p, q)
+
+  // If no target is in the left, it must be in the right or it doesn't exist.
+  if (left == null) return right
+
+  // If no target is in the right, it must in the left or it doesn't exist.
+  if (right == null) return left
+
+  // Targets are in children subtrees which are both nonnull. Return the common
+  // ancestor, root.
+  return root
+}
+
 export function insertBalanced<T extends Node<T>>(
   tree: T | undefined,
   node: T,
@@ -130,4 +180,16 @@ export function rotateRight<T extends Node<T>>(tree: T): T {
   newTree.right = tree // saved tree
   tree.left = tmp // tree.right because newTree.left
   return newTree
+}
+
+export function find<T extends Node<T>>(
+  tree: T | undefined,
+  val: T,
+  compare: Compare<T>
+): T | undefined {
+  if (tree == null) return
+  const comparison = compare(val, tree)
+  if (comparison == 0) return tree
+  if (comparison < 0) return find(tree.left, val, compare)
+  return find(tree.right, val, compare)
 }

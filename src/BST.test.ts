@@ -369,3 +369,60 @@ describe('insertBalanced', () => {
     expect(BST.insertBalanced(tree, node, compare)).toEqual(expected)
   })
 })
+
+describe('lowest common ancestor', () => {
+  type Node = {val: number; left?: Node; right?: Node}
+  test.each([
+    ['empty', [undefined], 1, 2, undefined],
+    //           5
+    //          / \
+    //         /   \
+    //        /     \
+    //       /       \
+    //      1         7
+    //     / \       / \
+    //    /   \     /   \
+    //   0     3   6     8
+    //  / \   / \
+    // x   x 2   4
+    ['ex 1', [5, 1, 7, 0, 3, 6, 8, undefined, undefined, 2, 4], 1, 7, 5],
+    //           5
+    //          / \
+    //         /   \
+    //        /     \
+    //       /       \
+    //      1         7
+    //     / \       / \
+    //    /   \     /   \
+    //   0     3   6     8
+    //  / \   / \
+    // x   x 2   4
+    ['ex 2', [5, 1, 7, 0, 3, 6, 8, undefined, undefined, 2, 4], 1, 4, 1],
+    //   1
+    //  /
+    // 0
+    ['ex 3', [1, 0], 1, 0, 1]
+  ])('Case %# %s: %p %p %p', (_, vals, pVal, qVal, expected) => {
+    const compare = (lhs: Readonly<Node>, rhs: Readonly<Node>) =>
+      lhs.val - rhs.val
+    const tree = parseBreadth(vals)
+    const p = BST.find(tree, {val: pVal}, compare)
+    const q = BST.find(tree, {val: qVal}, compare)
+    expect(BST.lowestCommonAncestor(tree, p, q)?.val).toEqual(expected)
+    expect(BST.lowestCommonAncestorRecursive(tree, p, q)?.val).toEqual(expected)
+  })
+
+  function parseBreadth(vals: (number | undefined)[]): Node | undefined {
+    const nodes: Node[] = []
+    for (let i = 0; i < vals.length; i++) {
+      const parent = nodes[Math.trunc((i - 1) / 2)]
+      const node = {val: vals[i]!}
+      nodes.push(node)
+      if (parent != null) {
+        if ((i & 1) == 1) parent.left = node
+        else parent.right = node
+      }
+    }
+    return nodes[0]
+  }
+})
