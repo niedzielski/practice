@@ -1,55 +1,61 @@
-export type Node = {next?: Node | undefined}
+export type Link<T> = {val: T; next?: Link<T>}
 
 /** @return True to halt. */
-export type It = (node: Node) => boolean | void
+export type It<T> = (link: Link<T>) => boolean
 
-export function find(list: Node | undefined, it: It): Node | undefined {
+export function find<T>(
+  list: Link<T> | undefined,
+  it: It<T>
+): Link<T> | undefined {
   for (; list; list = list.next) if (it(list)) return list
 }
 
 /** @return New head. */
-export function removeFront(list: Node | undefined): Node | undefined {
-  if (!list) return
+export function removeFront<T>(list: Link<T> | undefined): Link<T> | undefined {
+  if (list == null) return
   const next = list.next
   list.next = undefined
   return next
 }
 
-/** @return New head (node). */
-export function prepend(list: Node | undefined, node: Node): Node {
-  node.next = list
-  return node
+/** @return New head (link). */
+export function prepend<T>(list: Link<T> | undefined, link: Link<T>): Link<T> {
+  link.next = list
+  return link
 }
 
 /** @return New head. */
-export function append(list: Node | undefined, node: Node): Node {
-  if (!list) return node
+export function append<T>(list: Link<T> | undefined, link: Link<T>): Link<T> {
+  if (list == null) return link
   let tail = list
-  for (; tail.next; tail = tail.next);
-  tail.next = node
+  while (tail.next != null) tail = tail.next
+  tail.next = link
   return list
 }
 
-export function appendRecursive(list: Node | undefined, node: Node): Node {
-  if (!list) return node
-  list.next = appendRecursive(list.next, node)
+export function appendRecursive<T>(
+  list: Link<T> | undefined,
+  link: Link<T>
+): Link<T> {
+  if (list == null) return link
+  list.next = appendRecursive(list.next, link)
   return list
 }
 
-export function size(list: Node | undefined): number {
+export function size<T>(list: Link<T> | undefined): number {
   let size = 0
-  for (; list; list = list.next) ++size
+  for (; list != null; list = list.next) ++size
   return size
 }
 
-export function sizeRecursive(list: Node | undefined): number {
-  if (!list) return 0
+export function sizeRecursive<T>(list: Link<T> | undefined): number {
+  if (list == null) return 0
   return 1 + sizeRecursive(list.next)
 }
 
-export function reverse(list: Node | undefined): Node | undefined {
+export function reverse<T>(list: Link<T> | undefined): Link<T> | undefined {
   let head = undefined
-  for (let cursor = list; cursor; ) {
+  for (let cursor = list; cursor != null; ) {
     const next = cursor.next
     cursor.next = head
     head = cursor
@@ -58,7 +64,9 @@ export function reverse(list: Node | undefined): Node | undefined {
   return head
 }
 
-export function reverseRecursive(list: Node | undefined): Node | undefined {
+export function reverseRecursive<T>(
+  list: Link<T> | undefined
+): Link<T> | undefined {
   if (list?.next == null) return list
   const next = list.next
   list.next = undefined
@@ -67,7 +75,7 @@ export function reverseRecursive(list: Node | undefined): Node | undefined {
   return head
 }
 
-export function isCyclic(list: Node | undefined): boolean {
+export function isCyclic<T>(list: Link<T> | undefined): boolean {
   for (let runner = list?.next; runner != null; runner = runner.next?.next) {
     if (list == runner) return true
     list = list!.next
@@ -80,26 +88,35 @@ export function isCyclic(list: Node | undefined): boolean {
  * L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …. See
  * https://leetcode.com/problems/reorder-list.
  */
-export function reorder(list: Node | undefined): void {
-  let node = list
+export function reorder<T>(list: Link<T> | undefined): void {
+  let link = list
   for (let runner = list; runner != null; runner = runner.next?.next)
-    node = node!.next
+    link = link!.next
 
   let tail = undefined
-  while (node != null) {
-    const {next} = node
-    node.next = tail
-    tail = node
-    node = next
+  while (link != null) {
+    const {next} = link
+    link.next = tail
+    tail = link
+    link = next
   }
 
-  node = list
+  link = list
   while (tail != null) {
-    const {next} = node!
-    node!.next = tail
+    const {next} = link!
+    link!.next = tail
     tail = tail.next
-    node!.next.next = next
-    node = next
+    link!.next.next = next
+    link = next
   }
-  if (node != null) node.next = undefined
+  if (link != null) link.next = undefined
+}
+
+export function toArray<T>(list: Link<T> | undefined): T[] {
+  const arr = []
+  for (let link = list; link != null; ) {
+    arr.push(link.val)
+    link = link.next
+  }
+  return arr
 }

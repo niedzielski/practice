@@ -2,28 +2,26 @@ import {deepCloneJSON} from './clone'
 import * as SList from './SList'
 
 describe('find', () =>
-  test.each(<
+  test.each([
+    ['empty', undefined, (): boolean => false, undefined, 0],
+    ['single', {val: 1, next: undefined}, (): boolean => false, undefined, 1],
     [
-      msg: string,
-      list: SList.Node | undefined,
-      it: SList.It,
-      found: SList.Node | undefined,
-      iterations: number
-    ][]
-  >[
-    ['empty', undefined, () => {}, undefined, 0],
-    ['single', {next: undefined}, () => {}, undefined, 1],
-    ['multi', {next: {next: {next: undefined}}}, () => {}, undefined, 3],
+      'multi',
+      {val: 1, next: {val: 2, next: {val: 3, next: undefined}}},
+      (): boolean => false,
+      undefined,
+      3
+    ],
     [
       'first',
-      {next: {next: undefined}},
+      {val: 1, next: {val: 2, next: undefined}},
       () => true,
-      {next: {next: undefined}},
+      {val: 1, next: {val: 2, next: undefined}},
       1
     ],
     [
       'last',
-      {next: {next: undefined}},
+      {val: 1, next: {val: 2, next: undefined}},
       (() => {
         let flip = true
         return () => {
@@ -31,7 +29,7 @@ describe('find', () =>
           return flip
         }
       })(),
-      {next: undefined},
+      {val: 2, next: undefined},
       2
     ]
   ])('Case %# %s: %p', (_, list, it, found, iterations) => {
@@ -43,11 +41,11 @@ describe('find', () =>
 describe('removeFront', () =>
   test.each([
     ['empty', undefined, undefined],
-    ['singular', {next: undefined}, undefined],
+    ['singular', {val: 'a', next: undefined}, undefined],
     [
       'multi',
-      {data: 'a', next: {data: 'b', next: {data: 'c', next: undefined}}},
-      {data: 'b', next: {data: 'c', next: undefined}}
+      {val: 'a', next: {val: 'b', next: {val: 'c', next: undefined}}},
+      {val: 'b', next: {val: 'c', next: undefined}}
     ]
   ])('Case %# %s: %p', (_, list, result) =>
     expect(SList.removeFront(list)).toStrictEqual(result)
@@ -55,12 +53,17 @@ describe('removeFront', () =>
 
 describe('prepend', () =>
   test.each([
-    ['empty', undefined, {next: undefined}, {next: undefined}],
+    [
+      'empty',
+      undefined,
+      {val: 'a', next: undefined},
+      {val: 'a', next: undefined}
+    ],
     [
       'nonempty',
-      {next: undefined},
-      {next: undefined},
-      {next: {next: undefined}}
+      {val: 'a', next: undefined},
+      {val: 'b', next: undefined},
+      {val: 'b', next: {val: 'a', next: undefined}}
     ]
   ])('Case %# %s: %p', (_, list, node, expected) =>
     expect(SList.prepend(list, node)).toStrictEqual(expected)
@@ -71,20 +74,20 @@ describe('append', () =>
     [
       'empty',
       undefined,
-      {data: 'a', next: undefined},
-      {data: 'a', next: undefined}
+      {val: 'a', next: undefined},
+      {val: 'a', next: undefined}
     ],
     [
       'singular',
-      {data: 'a', next: undefined},
-      {data: 'b', next: undefined},
-      {data: 'a', next: {data: 'b', next: undefined}}
+      {val: 'a', next: undefined},
+      {val: 'b', next: undefined},
+      {val: 'a', next: {val: 'b', next: undefined}}
     ],
     [
       'multi',
-      {data: 'a', next: {data: 'b', next: undefined}},
-      {data: 'c', next: undefined},
-      {data: 'a', next: {data: 'b', next: {data: 'c', next: undefined}}}
+      {val: 'a', next: {val: 'b', next: undefined}},
+      {val: 'c', next: undefined},
+      {val: 'a', next: {val: 'b', next: {val: 'c', next: undefined}}}
     ]
   ])('Case %# %s: %p', (_, list, node, expected) => {
     expect(SList.append(deepCloneJSON(list), node)).toEqual(expected)
@@ -94,7 +97,11 @@ describe('append', () =>
 describe('size', () =>
   test.each([
     ['empty', undefined, 0],
-    ['nonempty', {next: {next: {next: undefined}}}, 3]
+    [
+      'nonempty',
+      {val: 'a', next: {val: 'b', next: {val: 'c', next: undefined}}},
+      3
+    ]
   ])('Case %# %s: %p', (_, list, expected) => {
     expect(SList.size(list)).toStrictEqual(expected)
     expect(SList.sizeRecursive(list)).toStrictEqual(expected)
@@ -103,11 +110,11 @@ describe('size', () =>
 describe('reverse', () =>
   test.each([
     ['empty', undefined, undefined],
-    ['singular', {data: 'a', next: undefined}, {data: 'a', next: undefined}],
+    ['singular', {val: 'a', next: undefined}, {val: 'a', next: undefined}],
     [
       'multi',
-      {data: 'a', next: {data: 'b', next: {data: 'c', next: undefined}}},
-      {data: 'c', next: {data: 'b', next: {data: 'a', next: undefined}}}
+      {val: 'a', next: {val: 'b', next: {val: 'c', next: undefined}}},
+      {val: 'c', next: {val: 'b', next: {val: 'a', next: undefined}}}
     ]
   ])('Case %# %s: %p', (_, list, expected) => {
     expect(SList.reverse(deepCloneJSON(list))).toEqual(expected)
@@ -117,31 +124,41 @@ describe('reverse', () =>
 describe('isCycle', () =>
   test.each([
     ['empty', undefined, false],
-    ['singular acyclic', {next: undefined}, false],
+    ['singular acyclic', {val: 'a', next: undefined}, false],
     [
       'singular cyclic',
       (() => {
-        const node: SList.Node = {next: undefined}
+        const node: SList.Link<string> = {val: 'a', next: undefined}
         node.next = node
         return node
       })(),
       true
     ],
-    ['two acyclic', {next: {next: undefined}}, false],
+    ['two acyclic', {val: 'a', next: {val: 'b', next: undefined}}, false],
     [
       'two cyclic',
       (() => {
-        const node: SList.Node = {next: {next: undefined}}
+        const node: SList.Link<string> = {
+          val: 'a',
+          next: {val: 'b', next: undefined}
+        }
         node.next!.next = node
         return node
       })(),
       true
     ],
-    ['three acyclic', {next: {next: {next: undefined}}}, false],
+    [
+      'three acyclic',
+      {val: 'a', next: {val: 'b', next: {val: 'c', next: undefined}}},
+      false
+    ],
     [
       'three cyclic',
       (() => {
-        const node: SList.Node = {next: {next: {next: undefined}}}
+        const node: SList.Link<string> = {
+          val: 'a',
+          next: {val: 'b', next: {val: 'c', next: undefined}}
+        }
         node.next!.next!.next = node
         return node
       })(),
@@ -149,19 +166,51 @@ describe('isCycle', () =>
     ],
     [
       'eight acyclic',
-      {next: {next: {next: {next: {next: {next: {next: {next: undefined}}}}}}}},
+      {
+        val: 'a',
+        next: {
+          val: 'b',
+          next: {
+            val: 'c',
+            next: {
+              val: 'd',
+              next: {
+                val: 'e',
+                next: {
+                  val: 'f',
+                  next: {val: 'g', next: {val: 'h', next: undefined}}
+                }
+              }
+            }
+          }
+        }
+      },
       false
     ],
     [
       'eight cyclic',
       (() => {
-        const node: SList.Node = {
+        const node: SList.Link<string> = {
+          val: 'a',
           next: {
-            next: {next: {next: {next: {next: {next: {next: undefined}}}}}}
+            val: 'b',
+            next: {
+              val: 'c',
+              next: {
+                val: 'd',
+                next: {
+                  val: 'e',
+                  next: {
+                    val: 'f',
+                    next: {val: 'g', next: {val: 'h', next: undefined}}
+                  }
+                }
+              }
+            }
           }
         }
         let next = node
-        while (next.next) next = next.next
+        while (next.next != null) next = next.next
         next.next = node
         return node
       })(),
@@ -172,13 +221,7 @@ describe('isCycle', () =>
   ))
 
 describe('reorder', () =>
-  test.each(<
-    [
-      msg: string,
-      list: SList.Node | undefined,
-      expected: SList.Node | undefined
-    ][]
-  >[
+  test.each([
     ['empty', undefined, undefined],
     [
       'ex 1',
