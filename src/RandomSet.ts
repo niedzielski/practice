@@ -47,4 +47,9 @@ export class RandomSet<Value> {
   ): To[] {
     return this.#values.map(callback, self)
   }
+
+  clear(): void {
+    this.#indices.clear()
+    this.#values.length = 0
+  }
 }
