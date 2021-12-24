@@ -1,36 +1,36 @@
 export class RandomSet<Value> {
-  private indices: Map<Value, number> = new Map()
-  private values: Value[] = []
+  #indices: Map<Value, number> = new Map()
+  #values: Value[] = []
 
   get size(): number {
-    return this.values.length
+    return this.#values.length
   }
 
   *[Symbol.iterator](): Generator<Value> {
-    for (const val of this.values) yield val
+    for (const val of this.#values) yield val
   }
 
   insert(val: Value): boolean {
-    if (this.indices.has(val)) return false
+    if (this.#indices.has(val)) return false
 
-    this.indices.set(val, this.size)
-    this.values[this.size] = val
+    this.#indices.set(val, this.size)
+    this.#values[this.size] = val
 
     return true
   }
 
   remove(val: Value): boolean {
-    const index = this.indices.get(val)
+    const index = this.#indices.get(val)
     if (index == null) return false
 
-    this.indices.delete(val)
+    this.#indices.delete(val)
 
-    const lastKey = this.values.pop()!
+    const lastKey = this.#values.pop()!
     if (lastKey != val) {
       // Reinsert.
-      this.indices.delete(lastKey)
-      this.indices.set(lastKey, index)
-      this.values[index] = lastKey
+      this.#indices.delete(lastKey)
+      this.#indices.set(lastKey, index)
+      this.#values[index] = lastKey
     }
 
     return true
@@ -38,13 +38,13 @@ export class RandomSet<Value> {
 
   getRandom(): Value | undefined {
     const index = Math.trunc(Math.random() * this.size)
-    return this.values[index]
+    return this.#values[index]
   }
 
   map<To>(
     callback: (value: Value, index: number, array: Value[]) => To,
     self?: unknown
   ): To[] {
-    return this.values.map(callback, self)
+    return this.#values.map(callback, self)
   }
 }
