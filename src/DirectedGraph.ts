@@ -1,3 +1,5 @@
+import * as SList from './SList'
+
 export class DirectedGraph<T> {
   #edges: Map<T, Set<T>> = new Map()
 
@@ -20,16 +22,16 @@ export class DirectedGraph<T> {
       }
     }
 
-    const path = []
+    let path: SList.Link<T> | undefined = undefined
     for (
       let node = paths.has(to) ? to : undefined;
       node != null;
       node = paths.get(node)
     ) {
-      path.unshift(node)
+      path = SList.prepend(path, node)
       if (node == from) break
     }
 
-    return path
+    return SList.toArray(path)
   }
 }
