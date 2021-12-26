@@ -2,8 +2,9 @@ import * as BST from './BST'
 import {deepCloneJSON} from './clone'
 
 describe('insert', () => {
-  type Node = {val: number; left?: Node; right?: Node}
-  test.each<[msg: string, tree: Node | undefined, node: Node, expected: Node]>([
+  test.each<
+    [msg: string, tree: NumNode | undefined, node: NumNode, expected: NumNode]
+  >([
     ['empty', undefined, {val: 1}, {val: 1}],
     ['singular', {val: 2}, {val: 1}, {val: 2, left: {val: 1}}],
     [
@@ -28,25 +29,26 @@ describe('insert', () => {
       }
     ]
   ])('Case %# %s: %p', (_, tree, node, expected) => {
-    const compare = (lhs: Readonly<Node>, rhs: Readonly<Node>) =>
-      lhs.val - rhs.val
     expect(
-      BST.insert(deepCloneJSON(tree), deepCloneJSON(node), compare)
+      BST.insert(deepCloneJSON(tree), deepCloneJSON(node), compareNumNodesAsc)
     ).toEqual(expected)
     expect(
-      BST.insertIterative(deepCloneJSON(tree), deepCloneJSON(node), compare)
+      BST.insertIterative(
+        deepCloneJSON(tree),
+        deepCloneJSON(node),
+        compareNumNodesAsc
+      )
     ).toEqual(expected)
   })
 })
 
 describe('remove', () => {
-  type Node = {val: number; left?: Node; right?: Node}
   test.each<
     [
       msg: string,
-      tree: Node | undefined,
-      node: Node,
-      expected: Node | undefined
+      tree: NumNode | undefined,
+      node: NumNode,
+      expected: NumNode | undefined
     ]
   >([
     ['empty', undefined, {val: 1}, undefined],
@@ -101,14 +103,12 @@ describe('remove', () => {
       }
     ]
   ])('Case %# %s: %p', (_, tree, node, expected) => {
-    const compare = (lhs: Node, rhs: Node) => lhs.val - rhs.val
-    expect(BST.remove(tree, node, compare)).toEqual(expected)
+    expect(BST.remove(tree, node, compareNumNodesAsc)).toEqual(expected)
   })
 })
 
 describe('getSize', () => {
-  type Node = {left?: Node; right?: Node; val: number}
-  test.each<[msg: string, tree: Node | undefined, size: number]>([
+  test.each<[msg: string, tree: NumNode | undefined, size: number]>([
     ['empty', undefined, 0],
     ['singular', {val: 1}, 1],
     ['multi', {val: 1, right: {val: 2, right: {val: 3}}}, 3]
@@ -127,8 +127,7 @@ describe('getHeight', () =>
   ))
 
 describe('rotateLeft', () => {
-  type Node = {val: number; left?: Node; right?: Node}
-  test.each<[msg: string, tree: Node, expected: Node]>([
+  test.each<[msg: string, tree: NumNode, expected: NumNode]>([
     ['singular', {val: 1}, {val: 1}],
     // 1
     //  \
@@ -206,8 +205,7 @@ describe('rotateLeft', () => {
 })
 
 describe('rotateRight', () => {
-  type Node = {val: number; left?: Node; right?: Node}
-  test.each<[msg: string, tree: Node, expected: Node]>([
+  test.each<[msg: string, tree: NumNode, expected: NumNode]>([
     ['singular', {val: 1}, {val: 1}],
     //      6
     //    /   \
@@ -285,8 +283,9 @@ describe('rotateRight', () => {
 })
 
 describe('insertBalanced', () => {
-  type Node = {val: number; left?: Node; right?: Node}
-  test.each<[msg: string, tree: Node | undefined, node: Node, expected: Node]>([
+  test.each<
+    [msg: string, tree: NumNode | undefined, node: NumNode, expected: NumNode]
+  >([
     ['empty', undefined, {val: 1}, {val: 1}],
     //    5
     //   / \
@@ -364,14 +363,11 @@ describe('insertBalanced', () => {
       }
     ]
   ])('Case %# %s: %p', (_, tree, node, expected) => {
-    const compare = (lhs: Readonly<Node>, rhs: Readonly<Node>) =>
-      lhs.val - rhs.val
-    expect(BST.insertBalanced(tree, node, compare)).toEqual(expected)
+    expect(BST.insertBalanced(tree, node, compareNumNodesAsc)).toEqual(expected)
   })
 })
 
 describe('lowest common ancestor', () => {
-  type Node = {val: number; left?: Node; right?: Node}
   test.each([
     ['empty', [undefined], 1, 2, undefined],
     //           5
@@ -403,26 +399,73 @@ describe('lowest common ancestor', () => {
     // 0
     ['ex 3', [1, 0], 1, 0, 1]
   ])('Case %# %s: %p %p %p', (_, vals, pVal, qVal, expected) => {
-    const compare = (lhs: Readonly<Node>, rhs: Readonly<Node>) =>
-      lhs.val - rhs.val
     const tree = parseBreadth(vals)
-    const p = BST.find(tree, {val: pVal}, compare)
-    const q = BST.find(tree, {val: qVal}, compare)
+    const p = BST.find(tree, {val: pVal}, compareNumNodesAsc)
+    const q = BST.find(tree, {val: qVal}, compareNumNodesAsc)
     expect(BST.lowestCommonAncestor(tree, p, q)?.val).toEqual(expected)
     expect(BST.lowestCommonAncestorRecursive(tree, p, q)?.val).toEqual(expected)
   })
-
-  function parseBreadth(vals: (number | undefined)[]): Node | undefined {
-    const nodes: Node[] = []
-    for (let i = 0; i < vals.length; i++) {
-      const parent = nodes[Math.trunc((i - 1) / 2)]
-      const node = {val: vals[i]!}
-      nodes.push(node)
-      if (parent != null) {
-        if ((i & 1) == 1) parent.left = node
-        else parent.right = node
-      }
-    }
-    return nodes[0]
-  }
 })
+
+describe('traverse scanline', () => {
+  test.each([
+    ['empty', [undefined], []],
+    // https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree
+    [
+      'ex 1',
+      [3, 9, 20, undefined, undefined, 15, 7],
+      [[9], [3, 15], [20], [7]]
+    ],
+    ['ex 2', [1, 2, 3, 4, 5, 6, 7], [[4], [2], [1, 5, 6], [3], [7]]],
+    ['ex 3', [1, 2, 3, 4, 6, 5, 7], [[4], [2], [1, 5, 6], [3], [7]]]
+  ])('Case %# %s: %p %p %p', (_, vals, expected) => {
+    const tree = parseBreadth(vals)
+    expect(
+      BST.traverseScanline(tree, compareNumNodesAsc).map(col =>
+        col.map(({val}) => val)
+      )
+    ).toEqual(expected)
+  })
+})
+
+describe('traverse breadth', () => {
+  test.each([
+    ['empty', [undefined], []],
+    // https://leetcode.com/problems/binary-tree-vertical-order-traversal
+    [
+      'ex 1',
+      [3, 9, 20, undefined, undefined, 15, 7],
+      [[9], [3, 15], [20], [7]]
+    ],
+    ['ex 2', [3, 9, 8, 4, 0, 1, 7], [[4], [9], [3, 0, 1], [8], [7]]],
+    [
+      'ex 3',
+      [3, 9, 8, 4, 0, 1, 7, undefined, undefined, undefined, 2, 5],
+      [[4], [9, 5], [3, 0, 1], [8, 2], [7]]
+    ]
+  ])('Case %# %s: %p %p %p', (_, vals, expected) => {
+    const tree = parseBreadth(vals)
+    expect(
+      BST.traverseBreadth(tree).map(col => col.map(({val}) => val))
+    ).toEqual(expected)
+  })
+})
+
+const compareNumNodesAsc = (lhs: Readonly<NumNode>, rhs: Readonly<NumNode>) =>
+  lhs.val - rhs.val
+
+type NumNode = {val: number; left?: NumNode; right?: NumNode}
+function parseBreadth(vals: (number | undefined)[]): NumNode | undefined {
+  const nodes: (NumNode | undefined)[] = []
+  for (let i = 0; i < vals.length; i++) {
+    const parent = nodes[Math.trunc((i - 1) / 2)]
+    const val = vals[i]
+    const node = val == null ? undefined : {val}
+    nodes.push(node)
+    if (parent != null) {
+      if ((i & 1) == 1) parent.left = node
+      else parent.right = node
+    }
+  }
+  return nodes[0]
+}

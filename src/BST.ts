@@ -88,6 +88,60 @@ export function insertBalanced<T extends Node<T>>(
   return tree
 }
 
+export function traverseScanline<T extends Node<T>>(
+  tree: T | undefined,
+  compare: Compare<T>
+): T[][] {
+  const cols: Record<number, Readonly<{node: T; y: number}>[]> = {}
+  let minX = Number.MAX_SAFE_INTEGER
+  let maxX = Number.MIN_SAFE_INTEGER
+  const open = [{node: tree, x: 0, y: 0}]
+  while (open.length > 0) {
+    const {node, x, y} = open.pop()!
+    if (node == null) continue
+    cols[x] ??= []
+    cols[x]!.push({node, y})
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    open.push(
+      {node: node.left, x: x - 1, y: y + 1},
+      {node: node.right, x: x + 1, y: y + 1}
+    )
+  }
+
+  const path = []
+  for (let x = minX; x <= maxX; x++) {
+    cols[x]!.sort((lhs, rhs) =>
+      lhs.y == rhs.y ? compare(lhs.node, rhs.node) : lhs.y - rhs.y
+    )
+    path.push(cols[x]!.map(({node}) => node))
+  }
+  return path
+}
+
+export function traverseBreadth<T extends Node<T>>(tree: T | undefined): T[][] {
+  const cols: Record<number, T[]> = {}
+  let minX = Number.MAX_SAFE_INTEGER
+  let maxX = Number.MIN_SAFE_INTEGER
+  const open = [{node: tree, x: 0, y: 0}]
+  while (open.length > 0) {
+    const {node, x, y} = open.shift()!
+    if (node == null) continue
+    cols[x] ??= []
+    cols[x]!.push(node)
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    open.push(
+      {node: node.left, x: x - 1, y: y + 1},
+      {node: node.right, x: x + 1, y: y + 1}
+    )
+  }
+
+  const path = []
+  for (let x = minX; x <= maxX; x++) path.push(cols[x]!)
+  return path
+}
+
 export function insert<T extends Node<T>>(
   tree: T | undefined,
   node: T,
