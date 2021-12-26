@@ -402,8 +402,8 @@ describe('lowest common ancestor', () => {
     const tree = parseBreadth(vals)
     const p = BST.find(tree, {val: pVal}, compareNumNodesAsc)
     const q = BST.find(tree, {val: qVal}, compareNumNodesAsc)
-    expect(BST.lowestCommonAncestor(tree, p, q)?.val).toEqual(expected)
-    expect(BST.lowestCommonAncestorRecursive(tree, p, q)?.val).toEqual(expected)
+    expect(BST.lowestCommonAncestor(tree, p, q)?.val).toBe(expected)
+    expect(BST.lowestCommonAncestorRecursive(tree, p, q)?.val).toBe(expected)
   })
 })
 
@@ -424,7 +424,7 @@ describe('traverse scanline', () => {
       BST.traverseScanline(tree, compareNumNodesAsc).map(col =>
         col.map(({val}) => val)
       )
-    ).toEqual(expected)
+    ).toStrictEqual(expected)
   })
 })
 
@@ -447,7 +447,7 @@ describe('traverse breadth', () => {
     const tree = parseBreadth(vals)
     expect(
       BST.traverseBreadth(tree).map(col => col.map(({val}) => val))
-    ).toEqual(expected)
+    ).toStrictEqual(expected)
   })
 })
 
