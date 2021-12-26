@@ -1,6 +1,6 @@
 # 💡 practice
 
-Coding exercises.
+Coding exercises and program sketches.
 
 ## License
 
