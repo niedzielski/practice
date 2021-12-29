@@ -10,6 +10,10 @@ export class RandomSet<Value> {
     for (const val of this.#values) yield val
   }
 
+  *entries(): Generator<[number, Value]> {
+    for (const entry of this.#values.entries()) yield entry
+  }
+
   insert(val: Value): boolean {
     if (this.#indices.has(val)) return false
 
