@@ -10,8 +10,8 @@ export class RandomSet<Value> {
     for (const val of this.#values) yield val
   }
 
-  *entries(): Generator<[number, Value]> {
-    for (const entry of this.#values.entries()) yield entry
+  entries(): IterableIterator<[number, Value]> {
+    return this.#values.entries()
   }
 
   insert(val: Value): boolean {
