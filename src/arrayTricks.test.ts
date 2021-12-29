@@ -9,6 +9,11 @@ test('Prefer flatMap to reduce-concat', () => {
   expect(arr.flatMap(val => [val, val * val], [])).toStrictEqual(expected)
 })
 
+test('Flatten', () =>
+  expect(
+    [1, 2, 3, [4, [5, [6, 7, [8, 9]]]]].flat(Number.POSITIVE_INFINITY)
+  ).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+
 test('Construct an array with initial size', () => {
   expect(Array(3).length).toBe(3)
   expect(Array(3).fill(1)).toStrictEqual([1, 1, 1])
