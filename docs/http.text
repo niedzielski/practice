@@ -1,0 +1,67 @@
+HTTP methods:
+  Idempotent: Sequential identical requests produce identical responses and do not change server state.
+  Safe: Significant server state is read-only.
+  GET:
+    Table:
+      Request body: Disallowed.
+      Successful response body: Allowed.
+      Safe: Yes.
+      Idempotent: Yes.
+      Cacheable response: Allowed.
+      HTML form method: Allowed.
+    It can be a security vulnerability to change server state (unsafe) when responding to a GET.
+    Ex: An HTML form submission can make a GET request with fields sent as query parameters.
+  HEAD:
+    GET but request headers only (no response body). Useful if generating the body is expensive (eg, large file) and the headers (like Content-Length) are wanted.
+    Table:
+      Request body: Disallowed.
+      Successful response body: Disallowed.
+      Safe: Yes.
+      Idempotent: Yes.
+      Cacheable response: Allowed.
+      HTML form method: Disallowed.
+  PUT:
+    Table:
+      Request body: Allowed.
+      Successful response body: Disallowed.
+      Safe: No.
+      Idempotent: Yes.
+      Cacheable response: Disallowed.
+      HTML forms: Disallowed.
+    PUT can be used to create an entity when the ID is known to the client. A PUT request creates, replaces, or overwrites.
+  POST:
+    Table:
+      Request body: Allowed.
+      Successful response body: Allowed.
+      Safe: No.
+      Idempotent: No.
+      Cacheable response: Allowed.
+      HTML forms: Allowed.
+    POST can be used to create or update an entity. PUT can be used by the former when the ID is known to the client and not a form and a response is not needed, PATCH can be used for the latter.
+    Ex: An HTML form submission can make a POST request with visible and hidden non-file fields sent as form data.
+  PATCH:
+    Table:
+      Request body: Allowed.
+      Successful response body: Allowed.
+      Safe: No.
+      Idempotent: No.
+      Cacheable response: Allowed.
+      HTML forms: Disallowed.
+    A PATCH is a modify request and usually contains partial update data.
+  DELETE:
+    Table:
+      Request body: Allowed.
+      Successful response body: Allowed.
+      Safe: No.
+      Idempotent: Yes.
+      Cacheable response: Disallowed.
+      HTML forms: Disallowed.
+  OPTIONS:
+    Table:
+      Request body: Disallowed.
+      Successful response body: Allowed.
+      Safe: Yes.
+      Idempotent: Yes.
+      Cacheable response: Disallowed.
+      HTML forms: Disallowed.
+    Used for CORS preflight and to identify HTTP methods supported.
