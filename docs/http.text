@@ -65,3 +65,63 @@ HTTP methods:
       Cacheable response: Disallowed.
       HTML forms: Disallowed.
     Used for CORS preflight and to identify HTTP methods supported.
+
+HTTP state:
+  HTTP is stateless.
+  Client can provide application state through cookies and query parameters.
+    Cookies are sent by the browser in the headers of /every/ HTTP request to allowed domains. Restricting domains improves performance and security. Siloing images to a CDN on a distinct domain allows the browser to omit cookies for image requests.
+  Server can vary responses by request headers, bodies, query parameters, and server state.
+
+Pub-sub patterns:
+  Observability is key. Eg, logging and metrics for new connections, closed connections, connection duration, sampling.
+  Load test.
+  Add jitter and exponential backoff to avoid a thundering herd of requests.
+  Significant complexity is added when service must be stateful (eg, tracking subscribers and subscription state).
+  Regular polling:
+    Periodically send a request to the service for new content.
+    Pros:
+      Universal support.
+      Simple.
+      Auth.
+      Cacheable.
+    Cons:
+      Half-duplex.
+      The service is inundated with requests.
+      Delay between requests (or over-requesting).
+      A mechanism for tracking subscribers is needed.
+  Long polling:
+    Send a request to the server and wait (hold the connection open) for new content. When new content is received, issue a new request.
+    Cons:
+      Still many requests when many messages. A new request is required for every batch of messages.
+      HTTP request overhead multiplied by the number of messages.
+  WebSocket:
+    Keep a persistent full-duplex connection between client and service. Instead of issuing a new request for each message, send packets instead.
+    There are four events on a socket: open, close, error, and message.
+    Upgrades HTTP protocol.
+    Supports sub-protocols like SOAP.
+    Can send either binary or text messages.
+    Data is buffered by default but you can see the pending data quantity and manually send.
+    Don’t have cross-origin limitations.
+    Pros:
+      Full-duplex.
+      Much more efficient for clients and services.
+      Can use the same connection to send binary and text data (old versions can only send text).
+      You can use sockets for some messages and standard HTTP requests for others.
+      Fits well with pub/sub model. Eg, Redis is a key-value store and cache that can be used for distributed messaging. In this case, messages are sent to all WebSocket connections for a given topic.
+    Cons:
+      HTTP/2 incompatible?
+      Load balancing is complicated?
+      Connections can become hung?
+      Doesn't have auth in itself. You have to implement that on top as a message.
+      Not HTTP cacheable (although you could create your own caching layer).
+  Server-Sent Events (SSEs)
+    Pros
+      Simple.
+      Cross-origin aware.
+      Supports credentials.
+      Automatic reconnect with tunable timeout.
+    Cons
+      Full-duplex?
+      Unidirectional.
+      Text-only.
+      Not cacheable.
