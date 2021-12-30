@@ -17,5 +17,8 @@
     "<rootDir>/node_modules/",
     "<rootDir>/dist/",
     "<rootDir>/.jest/"
-  ]
+  ],
+
+  "//": "For fetch tests.",
+  "testEnvironment": "jsdom"
 }
