@@ -1,0 +1,63 @@
+Cross-site request forgery (CSRF / XSRF)
+  Ex:
+    1. A user logs into example.com. The example.com service authenticates and sets a cookie in the service response.
+    2. The user visits a malicious website. The website issues an example.com request (could be a fetch with no user interaction, a form, a GET triggered by an image, anything). The request includes the authentication cookie which causes the request to act on the user's behalf.
+  Ex:
+    <img src="https://www.example.com/index.php?action=delete&id=123">
+  Mitigation:
+    Don't allow wildcard CORS in the first place
+    Include a CSRF token cookie with Secure, SameSite strict or lax, and a short lifetime on example.com, as a hidden field in any form, and in any request. Any requests that don't include both the hidden field token and a matching request cookie header are denied.
+    Generate a CSRF token per user session and include it with all requests. The server checks if the token matches the expected token for the given session.
+    Keep GET a safe (nonwriting) HTTP method. Don't change state.
+    Use the SameSite cookie attribute.
+
+Same-Origin Policy (SOP)
+  Under the policy, a web browser permits scripts contained in a first web page to access data in a second web page, but only if both web pages have the same origin. The policy applies only to scripts. Resources such as images, CSS, and dynamically-loaded scripts can be accessed across origins via the corresponding HTML tags with fonts being a notable exception.
+  the same-origin policy allows inter-origin HTTP requests with GET and POST methods but denies inter-origin PUT and DELETE requests
+  origins can use custom HTTP headers when sending requests to themselves but cannot use custom headers when sending requests to other origins
+  the HTML <script> element can execute content retrieved from foreign origins
+  CORS (Access-Control-* headers) relaxes SOP
+  Web messaging can be used to communicate across documents. The sender's origin must be checked.
+  SOP doesn't apply to WebSockets but an Origin header is included in the request
+
+Cross-Origin Resource Sharing (CORS):
+  An HTTP header and request preflight-based mechanism for a server to instruct the browser to allow resources to be loaded from foreign origins. The default for script-initiated requests (Fetch API, XMLHttpRequest) is SOP (Same-Origin Policy). CORS can loosen the policy to allow other or any site to access non-image resources.
+  CORS preflight:
+    An OPTIONS request containing Access-Control-Request-Method, Access-Control-Request-Headers, and Origin headers.
+    Response contains allowed request details in Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers, Access-Control-Max-Age, and other headers.
+    Automatically issued by the browser usually without programmer knowledge.
+    Preflight requests are not issued for "simple requests" but the actual GET / POST response may contain similar Access-Control loosening like Access-Control-Allow-Origin.
+      Simple requests include GET / POST requests with no manually set or only safe-listed headers (Accept, Accept-Language, Content-Language, Content-Type).
+      There are other qualifications.
+    Non-"simple requests" are preflighted and send an OPTIONS request first.
+   For correct caching, when the server sends a response with an Access-Control-Allow-Origin value with an explicit origin (not "*"), the response should also include a Vary response header with the value Origin.
+
+Cross-Site Scripting (XSS)
+  Malicious code is injected and executed in the user's browser.
+  Intentional foreign scripts are allowed. XSS is unintentional code injected maliciously. Eg, `<script>alert('hello')</script>` into a blob of text expected to be plain but interpreted as html. The injected code could be anything from sending requests as the user (eg, changing the user password) or using their authenticated cookies to send private data to a third-party.
+  Mitigation:
+    Sanitize all user input.
+    Sanitize all query parameters.
+    Don't use `dangerouslySetInnerHTML={{__html: ...}}` or innerHTML.
+    Do the above when reading data but also when writing it.
+    Use Content Security Policy to limit script execution by origin or nonce.
+
+Click-jacking
+  Trick the user into clicking a button.
+
+Cookie attributes:
+  Secure: Cookie is only sent over HTTPS.
+  HttpOnly: Inaccessible to client JavaScript. Eg, session cookies that don't need to be available to client JavaScrip (mitigate XSS).
+  Domain: Allowlists request domains to include cookies with (defaults to same host, excluding subdomains). These are the destinations the cookies are sent to.
+  Path: Allowlists request root paths to include cookies with.
+  SameSite: Allowlists cross-site requests to include cookies with (mitigate CSRF). These are the domains a cookie can be sent from. This is the origin cookies can be sent from. Eg, SameSite=strict means the sender cannot be a third-party site, only the origin site that set the cookie will be sent the cookie.
+
+Content Security Policy (CSP)
+  Allowlists locations for pretty much every single resource type.
+  Many, many configurations.
+  Includes violation report mechanism.
+
+iframe
+  Supports many security configurations including feature (microphone, camera, ...), referrer policy, CSP, and numerous sandbox options like allow-modals and allow-downloads.
+  embeds a browsing context: own session history and document
+  Use Window.postMessage to communicate across documents but check origin.
