@@ -9,20 +9,24 @@
     "esModuleInterop": true,
 
     //  Needed by `resolveJsonModule`.
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
 
     // Maximize type checking.
-    "resolveJsonModule": true,
-    "strict": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "error",
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowUnreachableCode": false,
-    "importsNotUsedAsValues": "error",
+    "resolveJsonModule": true,
+    "strict": true,
+    "useUnknownInCatchVariables": true,
 
-    "target": "ES2021",
+    "target": "es2021",
 
     "outDir": "dist",
 

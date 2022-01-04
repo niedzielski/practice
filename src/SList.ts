@@ -1,4 +1,4 @@
-export type Link<T> = {val: T; next?: Link<T>}
+export type Link<T> = {val: T; next?: Link<T> | undefined}
 
 /** @return True to halt. */
 export type It<T> = (link: Link<T>) => boolean

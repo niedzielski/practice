@@ -1,5 +1,11 @@
-export type List<T extends Link<T>> = {head?: T; tail?: T}
-export type Link<T extends Link<T>> = {prev?: T; next?: T}
+export type List<T extends Link<T>> = {
+  head?: T | undefined
+  tail?: T | undefined
+}
+export type Link<T extends Link<T>> = {
+  prev?: T | undefined
+  next?: T | undefined
+}
 
 export function make<T extends Link<T>>(): List<T> {
   return {}

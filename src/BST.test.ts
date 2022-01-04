@@ -454,7 +454,11 @@ describe('traverse breadth', () => {
 const compareNumNodesAsc = (lhs: Readonly<NumNode>, rhs: Readonly<NumNode>) =>
   lhs.val - rhs.val
 
-type NumNode = {val: number; left?: NumNode; right?: NumNode}
+type NumNode = {
+  val: number
+  left?: NumNode | undefined
+  right?: NumNode | undefined
+}
 function parseBreadth(vals: (number | undefined)[]): NumNode | undefined {
   const nodes: (NumNode | undefined)[] = []
   for (let i = 0; i < vals.length; i++) {

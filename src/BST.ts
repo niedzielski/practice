@@ -1,5 +1,8 @@
 // Left < Node < Right
-export type Node<T extends Node<T>> = {left?: T; right?: T}
+export type Node<T extends Node<T>> = {
+  left?: T | undefined
+  right?: T | undefined
+}
 
 export type Compare<T extends Node<T>> = (
   lhs: Readonly<T>,
