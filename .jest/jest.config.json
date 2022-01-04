@@ -4,6 +4,9 @@
   "//": "Don't look for tests in dependencies or build products.",
   "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/dist/"],
 
+  "//": "https://github.com/facebook/jest/issues/8114",
+  "modulePathIgnorePatterns": ["<rootDir>/dist/"],
+
   "transform": {".+\\.ts$": "ts-jest"},
 
   "//": "Colocate tests and snapshots.",
