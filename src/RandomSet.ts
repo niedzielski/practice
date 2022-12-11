@@ -1,13 +1,13 @@
-export class RandomSet<Value> implements Set<Value> {
+export class RandomSet<T> implements Set<T> {
   readonly [Symbol.toStringTag]: string = RandomSet.name
-  readonly #indexByVal: Map<Value, number> = new Map()
-  readonly #valByIndex: Value[] = []
+  readonly #indexByVal: Map<T, number> = new Map()
+  readonly #valByIndex: T[] = []
 
   get size(): number {
     return this.#valByIndex.length
   }
 
-  add(val: Value): this {
+  add(val: T): this {
     this.insert(val)
     return this
   }
@@ -17,7 +17,7 @@ export class RandomSet<Value> implements Set<Value> {
     this.#valByIndex.length = 0
   }
 
-  delete(val: Value): boolean {
+  delete(val: T): boolean {
     const index = this.#indexByVal.get(val)
     if (index == null) return false
 
@@ -35,49 +35,46 @@ export class RandomSet<Value> implements Set<Value> {
     return true
   }
 
-  *entries(): IterableIterator<[Value, Value]> {
+  *entries(): IterableIterator<[T, T]> {
     for (const val of this.#valByIndex.values()) yield [val, val]
   }
 
-  forEach(
-    cb: (val: Value, key: Value, set: Set<Value>) => void,
-    thisArg?: this
-  ): void {
-    this.#valByIndex.forEach(val => cb(val, val, this), thisArg)
+  forEach(cb: (val: T, key: T, set: Set<T>) => void, self?: this): void {
+    this.#valByIndex.forEach(val => cb(val, val, this), self)
   }
 
-  get(): Value | undefined {
+  get(): T | undefined {
     const index = Math.trunc(Math.random() * this.size)
     return this.#valByIndex[index]
   }
 
-  has(val: Value): boolean {
+  has(val: T): boolean {
     return this.#indexByVal.has(val)
   }
 
-  insert(val: Value): boolean {
+  insert(val: T): boolean {
     if (this.#indexByVal.has(val)) return false
     this.#indexByVal.set(val, this.size)
     this.#valByIndex[this.size] = val
     return true
   }
 
-  keys(): IterableIterator<Value> {
+  keys(): IterableIterator<T> {
     return this.values()
   }
 
   map<To>(
-    callback: (value: Value, index: number, array: Value[]) => To,
+    cb: (value: T, index: number, array: T[]) => To,
     self?: unknown
   ): To[] {
-    return this.#valByIndex.map(callback, self)
+    return this.#valByIndex.map(cb, self)
   }
 
-  *[Symbol.iterator](): Generator<Value> {
+  *[Symbol.iterator](): Generator<T> {
     for (const val of this.#valByIndex) yield val
   }
 
-  values(): IterableIterator<Value> {
+  values(): IterableIterator<T> {
     return this.#valByIndex.values()
   }
 }
