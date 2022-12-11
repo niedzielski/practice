@@ -1,59 +1,83 @@
-export class RandomSet<Value> {
-  #indices: Map<Value, number> = new Map()
-  #values: Value[] = []
+export class RandomSet<Value> implements Set<Value> {
+  readonly [Symbol.toStringTag]: string = RandomSet.name
+  readonly #indexByVal: Map<Value, number> = new Map()
+  readonly #valByIndex: Value[] = []
 
   get size(): number {
-    return this.#values.length
+    return this.#valByIndex.length
   }
 
-  *[Symbol.iterator](): Generator<Value> {
-    for (const val of this.#values) yield val
+  add(val: Value): this {
+    this.insert(val)
+    return this
   }
 
-  entries(): IterableIterator<[number, Value]> {
-    return this.#values.entries()
+  clear(): void {
+    this.#indexByVal.clear()
+    this.#valByIndex.length = 0
   }
 
-  insert(val: Value): boolean {
-    if (this.#indices.has(val)) return false
-
-    this.#indices.set(val, this.size)
-    this.#values[this.size] = val
-
-    return true
-  }
-
-  remove(val: Value): boolean {
-    const index = this.#indices.get(val)
+  delete(val: Value): boolean {
+    const index = this.#indexByVal.get(val)
     if (index == null) return false
 
-    this.#indices.delete(val)
+    this.#indexByVal.delete(val)
 
-    const lastKey = this.#values.pop()!
-    if (lastKey != val) {
+    const lastVal = this.#valByIndex.pop()!
+    if (lastVal != val) {
+      this.#indexByVal.delete(lastVal)
+
       // Reinsert.
-      this.#indices.delete(lastKey)
-      this.#indices.set(lastKey, index)
-      this.#values[index] = lastKey
+      this.#indexByVal.set(lastVal, index)
+      this.#valByIndex[index] = lastVal
     }
 
     return true
   }
 
-  getRandom(): Value | undefined {
+  *entries(): IterableIterator<[Value, Value]> {
+    for (const val of this.#valByIndex.values()) yield [val, val]
+  }
+
+  forEach(
+    cb: (val: Value, key: Value, set: Set<Value>) => void,
+    thisArg?: this
+  ): void {
+    this.#valByIndex.forEach(val => cb(val, val, this), thisArg)
+  }
+
+  get(): Value | undefined {
     const index = Math.trunc(Math.random() * this.size)
-    return this.#values[index]
+    return this.#valByIndex[index]
+  }
+
+  has(val: Value): boolean {
+    return this.#indexByVal.has(val)
+  }
+
+  insert(val: Value): boolean {
+    if (this.#indexByVal.has(val)) return false
+    this.#indexByVal.set(val, this.size)
+    this.#valByIndex[this.size] = val
+    return true
+  }
+
+  keys(): IterableIterator<Value> {
+    return this.values()
   }
 
   map<To>(
     callback: (value: Value, index: number, array: Value[]) => To,
     self?: unknown
   ): To[] {
-    return this.#values.map(callback, self)
+    return this.#valByIndex.map(callback, self)
   }
 
-  clear(): void {
-    this.#indices.clear()
-    this.#values.length = 0
+  *[Symbol.iterator](): Generator<Value> {
+    for (const val of this.#valByIndex) yield val
+  }
+
+  values(): IterableIterator<Value> {
+    return this.#valByIndex.values()
   }
 }
